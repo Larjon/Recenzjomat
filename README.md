@@ -37,7 +37,7 @@
 
 ```bash
 git clone https://github.com/Larjon/Recenzjomat.git
-cd book_review_project
+cd Recenzjomat
 ```
 
 2. **Utwórz i aktywuj środowisko wirtualne**:
