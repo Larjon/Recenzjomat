@@ -1,4 +1,4 @@
-
+![image](https://github.com/user-attachments/assets/a5f1c22c-6289-4505-94e8-5dba03e34d8c)
 # Recenzjomat
 
 **Recenzjomat** to nowoczesna aplikacja webowa stworzona w Django, umożliwiająca przeglądanie książek, dodawanie recenzji i ocenianie ulubionych tytułów. Projekt zawiera system autoryzacji użytkowników, panel administracyjny, AJAX-owe recenzje oraz elegancki interfejs z wykorzystaniem Bootstrap Flatly.
@@ -71,10 +71,14 @@ python manage.py createsuperuser
 
 ##  Zrzuty ekranu
 
-> ![alt text](image.png)
-> ![alt text](image-1.png)
-> ![alt text](image-2.png)
-> ![alt text](image-3.png)
+> ![image](https://github.com/user-attachments/assets/94ec7952-ea66-4185-9ba8-940332d990cf)
+
+> ![image](https://github.com/user-attachments/assets/82990f38-fce5-4d90-9ff9-7f641324d495)
+
+> ![image](https://github.com/user-attachments/assets/bd5cf473-eda5-4657-9497-1b26eb911ac7)
+
+> ![image](https://github.com/user-attachments/assets/1acc809a-a48a-4301-8b59-26add02261b6)
+
 
 ##  Autor
 
