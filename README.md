@@ -37,7 +37,7 @@
 
 ```bash
 git clone https://github.com/Larjon/Recenzjomat.git
-cd Recenzjomat
+cd book_review_project
 ```
 
 2. **Utwórz i aktywuj środowisko wirtualne**:
@@ -78,6 +78,8 @@ python manage.py createsuperuser
 > ![image](https://github.com/user-attachments/assets/bd5cf473-eda5-4657-9497-1b26eb911ac7)
 
 > ![image](https://github.com/user-attachments/assets/1acc809a-a48a-4301-8b59-26add02261b6)
+
+> ![image](https://github.com/user-attachments/assets/4463489f-064b-44de-aabc-b274f74d7cc7)
 
 
 ##  Autor
