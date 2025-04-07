@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Recenzjomat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/flatly/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    main.container {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+  <div class="container">
+    <a class="navbar-brand fs-3 fw-bold" href="{% url 'reviews:lista_ksiazek' %}">Recenzjomat</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <form method="post" action="{% url 'logout' %}" class="d-inline">
+              {% csrf_token %}
+              <button class="nav-link btn btn-link" style="padding: 0; border: none;">
+                <i class="bi bi-box-arrow-right"></i> Wyloguj
+              </button>
+            </form>
+          </li>
+        {% else %}
+        <li class="nav-item me-3">
+            <a class="nav-link" href="{% url 'login' %}">
+                <i class="bi bi-box-arrow-in-right"></i> Zaloguj
+            </a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'reviews:register' %}">
+                <i class="bi bi-person-plus"></i> Rejestracja
+            </a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="container d-flex flex-column align-items-center">
+  {% block content %}
+  {% endblock %}
+</main>
+
+<footer class="bg-light text-center text-muted py-4 mt-auto border-top">
+  <div>
+    <a href="https://facebook.com" class="me-3 text-decoration-none text-muted" target="_blank">
+      <i class="bi bi-facebook fs-4"></i>
+    </a>
+    <a href="https://instagram.com" class="me-3 text-decoration-none text-muted" target="_blank">
+      <i class="bi bi-instagram fs-4"></i>
+    </a>
+  </div>
+  <div class="mt-2">
+    &copy; {% now "Y" %} Recenzjomat - Twoje miejsce na książki 📚
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

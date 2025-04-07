@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-md-8 mx-auto">
+  <div class="card mb-4">
+    <div class="row g-0">
+      {% if ksiazka.okladka %}
+      <div class="col-md-4 d-flex align-items-center justify-content-center p-3">
+        <img src="{{ ksiazka.okladka.url }}" class="img-fluid rounded-start" alt="Okładka książki">
+      </div>
+      {% endif %}
+      <div class="col-md-8">
+        <div class="card-body">
+          <h3 class="card-title">{{ ksiazka.tytul }}</h3>
+          <p class="card-text mb-1"><strong>Autor:</strong> {{ ksiazka.autor }}</p>
+          <p class="card-text mb-1"><strong>Kategoria:</strong> {{ ksiazka.kategorie.nazwa }}</p>
+          <p class="card-text">{{ ksiazka.opis }}</p>
+          <p class="fs-5 mt-3 mb-0">
+            <i class="bi bi-star-fill text-warning me-1"></i>
+            <span id="srednia-ocena">{{ ksiazka.srednia_ocena|floatformat:1 }}</span>
+          </p>
+
+          {% if ksiazka.info_autora %}
+          <hr>
+          <h5>O autorze</h5>
+          <p>{{ ksiazka.info_autora }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <h4 class="mb-3 text-center">Recenzje</h4>
+    <div id="lista-recenzji">
+      {% for recenzja in recenzje %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-1 text-muted">
+            <strong>{{ recenzja.autor_recenzji.username }}</strong> — {{ recenzja.ocena }}/5
+          </h6>
+          <p class="card-text">{{ recenzja.tresc }}</p>
+        </div>
+      </div>
+      {% empty %}
+      <div class="card mb-3 text-center text-muted">
+        <div class="card-body">
+          <p class="mb-0">Brak recenzji. Bądź pierwszą osobą, która doda swoją opinię!</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if user.is_authenticated %}
+    {% if uzytkownik_juz_recenzowal %}
+      <div class="alert alert-info mt-4 text-center">Już dodałeś recenzję tej książki.</div>
+    {% else %}
+      <h5 id="dodaj-recenzje-naglowek" class="mt-5 text-center">Dodaj recenzję</h5>
+      <form id="recenzja-form" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="{{ form.tresc.id_for_label }}" class="form-label">Treść:</label>
+          {{ form.tresc }}
+        </div>
+        <div class="d-flex justify-content-center align-items-end gap-3 mt-3 flex-wrap">
+          <div>
+            <label for="{{ form.ocena.id_for_label }}" class="form-label text-center w-100">Ocena:</label>
+            {{ form.ocena }}
+          </div>
+          <div>
+            <button type="submit" class="btn btn-primary mt-2">Dodaj recenzję</button>
+          </div>
+        </div>
+      </form>
+      <div id="ajax-msg" class="mt-3 text-center"></div>
+    {% endif %}
+  {% else %}
+    <p class="mt-4 text-center">
+      <a href="{% url 'login' %}?next={{ request.path }}">Zaloguj się</a>, aby dodać recenzję.
+    </p>
+  {% endif %}
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("recenzja-form");
+  if (!form) return;
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const btn = form.querySelector("button[type=submit]");
+    btn.disabled = true;
+
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const tresc = document.querySelector('[name=tresc]').value;
+    const ocena = document.querySelector('[name=ocena]').value;
+
+    fetch("", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": csrfToken
+      },
+      body: new URLSearchParams({ tresc, ocena })
+    })
+    .then(response => {
+      const contentType = response.headers.get("content-type");
+      if (!response.ok || !contentType || !contentType.includes("application/json")) {
+        throw new Error("Niepoprawna odpowiedź serwera (nie JSON)");
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.html) {
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = data.html;
+        const newReview = tempDiv.firstElementChild;
+
+        const list = document.getElementById("lista-recenzji");
+        const empty = list.querySelector(".card.text-muted");
+        if (empty) empty.remove();
+
+        newReview.style.opacity = 0;
+        list.insertBefore(newReview, list.firstChild);
+        setTimeout(() => {
+          newReview.style.transition = "opacity 0.5s ease";
+          newReview.style.opacity = 1;
+        }, 10);
+
+        document.getElementById("srednia-ocena").innerText = parseFloat(data.srednia).toFixed(1);
+        form.remove();
+        document.getElementById("dodaj-recenzje-naglowek").remove();
+        document.getElementById("ajax-msg").innerHTML = `
+          <div class="alert alert-info text-center mt-4">Już dodałeś recenzję tej książki.</div>
+        `;
+      } else if (data.error) {
+        document.getElementById("ajax-msg").innerText = data.error;
+        btn.disabled = false;
+      }
+    })
+    .catch(err => {
+      document.getElementById("ajax-msg").innerText = "Błąd: " + err.message;
+      btn.disabled = false;
+    });
+  });
+});
+</script>
+{% endblock %}

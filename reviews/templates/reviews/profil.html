@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Witaj, {{ user.username }}</h2>
+    <h4>Twoje recenzje:</h4>
+    <hr>
+    {% if recenzje %}
+        {% for recenzja in recenzje %}
+        <div class="mb-3">
+            <p>
+                <strong>{{ recenzja.ksiazka.tytul }}</strong><br>
+                Ocena: {{ recenzja.ocena }}/5
+            </p>
+            <p>{{ recenzja.tresc }}</p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Nie dodałeś jeszcze żadnych recenzji.</p>
+    {% endif %}
+</div>
+{% endblock %}
